@@ -1,6 +1,7 @@
 const   MileDistance = 512;
 
-export const loadPackedList=(buf,offset)=>{
+export const loadPackedList=(buf)=>{
+    let offset=0;
     const dataview = new DataView(buf);
     const added=dataview.getUint32(offset,true);        offset+=4;
     

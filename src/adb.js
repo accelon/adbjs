@@ -5,9 +5,8 @@ import {loadROMBlock} from './romblock.js';
 
 export const openADB= buf=>{
     const header=readHeader(buf);
-    let offset=256;
     //read sources
-    const blocks=loadROMBlock(buf, offset);
+    const blocks=loadROMBlock(buf.slice(256),256); //header size
 
     // console.log(header)
     return {header,blocks};

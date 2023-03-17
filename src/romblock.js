@@ -12,39 +12,42 @@ const boHits        = 0x00000001;
 const boAscii       = 0x00000002;
 const boUnicode     = 0x00000003;
 const boBlocks      = 0x00000004;
-const header_size   = 0x100;
+const header_size   = 0x10;
 
-export const loadROMBlock=(buf,offset)=>{
+export const loadROMBlock=(buf,offset=0)=>{
     const dataview = new DataView(buf);
-
-    const feature=dataview.getUint32(offset,true);        offset+=4;
-    const signature=dataview.getInt32(offset,true);        offset+=4;
-    const totalblocksize=dataview.getUint32(offset,true);  offset+=4;
-    const blocksize=dataview.getInt32(offset,true);        offset+=4;
-
-    let fcount = blocksize?totalblocksize/blocksize:0;
-    let lengths=null; //null if fixed length
-    const blockstart=offset;
-    console.log('blockstart',offset)
+    const feature=dataview.getUint32(0,true);        
+    const signature=dataview.getInt32(4,true);        
+    const totalblocksize=dataview.getUint32(8,true);  
+    const blocksize=dataview.getInt32(12,true);        
+    let count = blocksize?totalblocksize/blocksize:0;
+    let lengths=null; //null if fixed length    
     let adv=0;
     if (blocksize==0) { //'variable length block'
-        adv=dataview.getUint32(offset+totalblocksize,true); 
-        lengths=loadPackedList(buf,offset+totalblocksize);
-        fcount=lengths.length;
+        adv=dataview.getUint32(header_size+totalblocksize,true); 
+        lengths=loadPackedList(buf.slice(header_size+totalblocksize));
+        count=lengths.length;
     }
     let pointers=0;
     if (feature&boWithPointer) {
         pointers=offset+totalblocksize+adv;
         console.log('with pointers')   
     }
-
-    let names;
+    offset+=header_size;
+    let names=[];
     if (feature&boNamed && lengths) {
-        offset+=totalblocksize+adv; //now point to actual blocks
         
-        names=loadROMBlock(buf, 100+lengths[lengths.length-1] );
-        
-        console.log('names',names)   
+        const nameblockoffset=lengths[lengths.length-2];
+        const namebuf=buf.slice(header_size+nameblockoffset);
+        const namesblock=loadROMBlock(namebuf, offset+nameblockoffset);
+        let off=0;
+        for (let i=0;i<namesblock.count;i++) {
+            const decoder= new TextDecoder('utf-16le');
+            const len=i>0?namesblock.lengths[i]-namesblock.lengths[i-1]:namesblock.lengths[i];
+            const s=decoder.decode( namebuf.slice(off+header_size, off+header_size+len-2));
+            off=namesblock.lengths[i];
+            names.push(s)
+        }
     }
-    return {feature,signature,totalblocksize,fcount,blocksize,pointers,lengths,names}
+    return {feature,signature,totalblocksize,count,blocksize,pointers,lengths,names,offset}
 }

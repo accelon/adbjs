@@ -24,7 +24,7 @@ export const readHeader=buf=>{
     const features=dataview.getInt32(offset,true);        offset+=4;
     const reserved2=dataview.getInt32(offset,true);        offset+=4;
      
-    const dbcname = new TextDecoder('utf-16le').decode(buf.slice(offset,offset+64)).replace(/\0.*$/g,'');;
+    const dbcname = new TextDecoder('utf-16le').decode(buf.slice(offset,offset+64)).replace(/\0.*$/g,'');
     offset+=64;
 
     //not used
