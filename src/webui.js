@@ -10,24 +10,24 @@ const saveOption={types:[{
 ]
 }
 
+const lblmessage=document.querySelector('#message');
+const btndownload=document.querySelector('#btndownload');
+
 window.doconvert=async function(){
     const adb=new openADB(adbbuffer);
-
     if (!adb || adb.error) {
         console.error(adb.error||'wrong adb');
         return;
     }
-    const files=dumpAll(adb);
-	const zipbuf = storeZip(files);
-    const outfn=adb.header.dbname+'.zip';
-	
-    createBrowserDownload(outfn,zipbuf);
-
-    //writeChanged(outfn,newzipbuf,true); 
+    lblmessage.innerHTML='轉換中...'
+    setTimeout(function(){
+        const files=dumpAll(adb);
+        const zipbuf = storeZip(files);
+        const outfn=adb.header.dbname+'.zip';
+        createBrowserDownload(outfn,zipbuf);
+        lblmessage.innerHTML=''
+    },0);
 }
-
-const lblmessage=document.querySelector('#message');
-const btndownload=document.querySelector('#btndownload');
 
 document.querySelector('input').addEventListener('change', function() {
     var reader = new FileReader();
