@@ -5,7 +5,9 @@
   "main": "index.js",
   "type":"module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"esbuild --format=iife --bundle --watch src/webui.js --outfile=dist/index.js",
+    "build":"esbuild --format=iife --bundle src/webui.ts --outfile=dist/index.js"
   },
   "keywords": [],
   "author": "",

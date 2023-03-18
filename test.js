@@ -10,12 +10,12 @@ if (!existsSync(adbname)) {
 const buf=readFileSync('yinshun.adb',null).buffer;
 
 test++;
-
 // copy yinshun.adb from accelon3
+const handle=new openADB(buf);
+pass+= handle?1:0;
+//console.log(handle.resources)
 
-const handle=openADB(buf);
-pass+= !handle?1:0;
-console.log(handle.blocks)
-
+const xml=handle.getXML();
+// console.log(rawxml.length,rawxml.slice(0,512));
 console.log('test',test,'pass',pass);
 
