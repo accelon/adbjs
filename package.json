@@ -1,5 +1,5 @@
 {
-  "name": "adbnodejs",
+  "name": "adbjs",
   "version": "1.0.0",
   "description": "access adb with nodejs",
   "main": "index.js",
