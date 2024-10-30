@@ -67,7 +67,8 @@ export class ROMBlocks{
     getBlockOffset(i){
         if (typeof i=='string') {
             const at=this.names.indexOf(i)
-            if (!~at) throw "wrong block name "+i;
+           // if (!~at) throw "wrong block name "+i;
+           if (!~at) return 0;
             i=at;
         }
         return this.offset+(i==0?0: this.lengths[i-1]);

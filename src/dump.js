@@ -37,10 +37,12 @@ export const dumpXML=adb=>{
 }
 export const dumpAll=adb=>{
     const files=dumpXML(adb);
-    for (let i=0;i<adb.resources.count;i++) { 
-        const name=adb.resources.names[i];
-        const content=new Int8Array(adb.resources.getRawData(i));
-        files.push({name,content});
+    if (adb.resources) {
+	    for (let i=0;i<adb.resources.count;i++) { 
+	        const name=adb.resources.names[i];
+	        const content=new Int8Array(adb.resources.getRawData(i));
+	        files.push({name,content});
+	    }
     }
     return files;
 }

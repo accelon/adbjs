@@ -16,7 +16,7 @@ export class openADB {
         const sourceoff=this.blocks.getBlockOffset('source');
         this.sources=new ROMBlocks(buf.slice(sourceoff),sourceoff); 
         const resourcesoff=this.blocks.getBlockOffset('resources');
-        this.resources=new ROMBlocks(buf.slice(resourcesoff),resourcesoff); 
+        if (resourcesoff) this.resources=new ROMBlocks(buf.slice(resourcesoff),resourcesoff); 
         const tablesoff=this.blocks.getBlockOffset('tables');
         this.tables=new ROMBlocks(buf.slice(tablesoff),tablesoff); 
         const PALinesoff=this.tables.getBlockOffset('lines.physical');
